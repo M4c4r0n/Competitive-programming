@@ -1,5 +1,5 @@
 const int mod = 1000000007;
-// a^n mod を計算
+// a^n mod を計算する
 long long modpow(long long a, long long n, long long mod) {
 	long long res = 1;
 	while (n > 0) {
@@ -9,22 +9,30 @@ long long modpow(long long a, long long n, long long mod) {
 	}
 	return res;
 }
-vector<int> f = {1},fi = {1};
-//x!%modを計算
-int fact(int x){
-	while((int)f.size() <=x)f.push_back((f.back()*f.size())%mod);
-	return f[x];
+vector<ll> fact,ifact;
+void init(int n){
+	fact.resize(n);
+	ifact.resize(n);
+	fact[0] = 1;
+	for(int i = 1;i < n;i++)fact[i] = (fact[i-1]*i)%mod;
+	rep(i,n)ifact[i] = modpow(fact[i],mod-2,mod);
 }
-//x!の逆元%modを計算
-int ifact(int x){
-	return modpow(fact(x),mod-2,mod);
+void add(ll &a,ll b){
+	a = (a+b)%mod;
+	a = (a%mod + mod)%mod;
 }
-//xCy %modを計算
-int C(int x,int y){
+void mul(ll &a,ll b){
+	a = (a*b)%mod;
+}
+ll C(ll x,ll y){
+	if(x < 0)return 0;
+	if(y < 0)return 0;
 	if(x < y)return 0;
-	return fact(x)*ifact(y)%mod*ifact(x-y)%mod;
+	ll ret = fact[x];
+	mul(ret,ifact[y]);
+	mul(ret,ifact[x-y]);
+	return ret;
 }
-//xHy = x+y-1Cyを計算
-int H(int x,int y){
-  return C(x+y-1,y);
+ll H(ll x,ll y){
+	return C(x+y-1,y);
 }
